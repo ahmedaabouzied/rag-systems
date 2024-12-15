@@ -1,0 +1,8 @@
+langchain_community
+langchain-ollama
+langchain-chroma
+langchain-core
+langgraph
+langchain
+chromadb
+bs4
