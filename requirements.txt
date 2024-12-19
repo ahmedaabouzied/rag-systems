@@ -4,5 +4,8 @@ langchain-chroma
 langchain-core
 langgraph
 langchain
+pydantic
 chromadb
+typing
+uuid
 bs4
