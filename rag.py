@@ -15,6 +15,7 @@ from langchain_chroma import Chroma
 from pydantic import BaseModel, Field
 from typing import Optional
 from typing import List
+import sqlite3
 import chromadb
 
 model_name = "llama3.2"
@@ -24,6 +25,32 @@ embeddings = OllamaEmbeddings(
 
 class Queries(BaseModel):
     queries: List[str] = Field(description="Multiple queries derived from the same input query")
+
+def init_sqlitedb():
+    # Step 1: Create SQLite Database and Table
+    db_path = "documents.db"
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    # Create a table to store documents
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS documents (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        content TEXT NOT NULL
+    )
+    """)
+
+def get_db():
+    db_path = "documents.db"
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    return cursor
+
+def db_insert(doc: str):
+    db_path = "documents.db"
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO documents (content) VALUES (?)", (doc))
+    conn.commit()
 
 def init_llm():
     global llm
@@ -164,6 +191,7 @@ if __name__ == "__main__":
         sys.exit()
     if args[1] == "load":
         url = sys.argv[2]
+        init_sqlitedb()
         load_doc(url)
         sys.exit()
 
