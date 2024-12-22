@@ -24,21 +24,21 @@ def fetch_article_and_remove_code_blocks(url):
         response = requests.get(url)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
-        article = soup.find("article")
+        article = soup.find("div", {"class": "Article"})
         if not article:
             return None, None
         for code_block in article.find_all(["pre", "code"]):
             code_block.decompose()
 
-        text = article.get(seperator=" ")
+        text = article.get_text(separator=" ")
         text = re.sub(r'\s+', ' ', text).strip()
         # Improved sentence splitting (handles abbreviations better)
         sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s', text)
         sentences = [s.strip() for s in sentences if s.strip()]  # Remove empty sentences
         return text, sentences
-    except:
-        print(f"Error scrapping article from URL: {url}")
-        return None
+    except Exception as error:
+        print(f"Error scrapping article from URL: {url}: {error}")
+        return None, None
 
 def fetch_all_article_links(url: str):
     response = requests.get(url)
