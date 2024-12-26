@@ -1,0 +1,9 @@
+langchain_community
+langchain-openai
+langchain-ollama
+transformers
+langgraph
+
+pydantic
+typing
+torch
